@@ -1,0 +1,23 @@
+{
+  "name": "dads-workout-magazine",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Multi-agent weekly fitness digest for dads",
+  "scripts": {
+    "build": "pnpm -r build",
+    "dev": "pnpm -r --parallel dev",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck",
+    "generate": "pnpm --filter runner generate-digest",
+    "send-email": "pnpm --filter runner send-email",
+    "test": "pnpm -r test"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "typescript": "^5.3.0"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=8.0.0"
+  }
+}

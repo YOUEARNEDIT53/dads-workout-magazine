@@ -1,0 +1,31 @@
+{
+  "name": "@dads-workout/runner",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "bin": {
+    "dads-workout": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "typecheck": "tsc --noEmit",
+    "generate-digest": "node --import tsx src/generate-digest.ts",
+    "send-email": "node --import tsx src/send-email.ts",
+    "health-check": "node --import tsx src/health-check.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.71.0",
+    "@dads-workout/shared": "workspace:*",
+    "@dads-workout/database": "workspace:*",
+    "@dads-workout/agents": "workspace:*",
+    "@dads-workout/email-templates": "workspace:*",
+    "resend": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.0"
+  }
+}
