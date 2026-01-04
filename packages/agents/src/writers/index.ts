@@ -45,16 +45,15 @@ export function createWriterAgent(
   }
 }
 
-// 4-week rotation schedule
-export const ROTATION_SCHEDULE: { week: number; writers: WriterAgentId[] }[] = [
-  { week: 1, writers: ['dr-marcus-chen', 'dr-angela-okafor'] },
-  { week: 2, writers: ['coach-dt-thompson', 'maya-santana'] },
-  { week: 3, writers: ['dr-angela-okafor', 'dr-marcus-chen'] },
-  { week: 4, writers: ['maya-santana', 'coach-dt-thompson'] },
+// All 4 writers contribute to every issue
+export const ALL_WRITERS: WriterAgentId[] = [
+  'dr-marcus-chen',
+  'dr-angela-okafor',
+  'coach-dt-thompson',
+  'maya-santana',
 ];
 
-export function getWritersForWeek(weekNumber: number): WriterAgentId[] {
-  const rotationWeek = ((weekNumber - 1) % 4) + 1;
-  const schedule = ROTATION_SCHEDULE.find((s) => s.week === rotationWeek);
-  return schedule ? schedule.writers : ROTATION_SCHEDULE[0].writers;
+export function getWritersForWeek(_weekNumber: number): WriterAgentId[] {
+  // All 4 main contributors write for every issue
+  return ALL_WRITERS;
 }
