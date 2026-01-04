@@ -108,8 +108,19 @@ jobs:
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: |
           cd apps/runner
-          RESULT=$(pnpm generate-digest 2>&1 | tail -1)
-          echo "Result: $RESULT"
+          # Run with full output for debugging
+          set +e
+          OUTPUT=$(pnpm generate-digest 2>&1)
+          EXIT_CODE=$?
+          echo "$OUTPUT"
+          set -e
+          if [ $EXIT_CODE -ne 0 ]; then
+            echo "::error::Digest generation failed with exit code $EXIT_CODE"
+            exit $EXIT_CODE
+          fi
+          # Extract the JSON result from the last line
+          RESULT=$(echo "$OUTPUT" | grep -E '^\{.*\}$' | tail -1)
+          echo "Result JSON: $RESULT"
           ISSUE_ID=$(echo $RESULT | jq -r '.issueId // empty')
           ISSUE_SLUG=$(echo $RESULT | jq -r '.issueSlug // empty')
           ISSUE_NUMBER=$(echo $RESULT | jq -r '.issueNumber // empty')

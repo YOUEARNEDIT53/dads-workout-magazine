@@ -13,7 +13,7 @@ export interface Config {
     serviceKey: string;
   };
   resend: {
-    apiKey: string;
+    apiKey: string | null;
     emailTo: string;
     emailFrom: string;
   };
@@ -45,7 +45,8 @@ export function getConfig(): Config {
       serviceKey: requireEnv('SUPABASE_SERVICE_KEY'),
     },
     resend: {
-      apiKey: requireEnv('RESEND_API_KEY'),
+      // RESEND_API_KEY is optional during content generation, required for email sending
+      apiKey: process.env.RESEND_API_KEY || null,
       emailTo: optionalEnv('DIGEST_EMAIL_TO', 'youearndit@gmail.com'),
       emailFrom: optionalEnv('DIGEST_EMAIL_FROM', "Dad's Workout <onboarding@resend.dev>"),
     },

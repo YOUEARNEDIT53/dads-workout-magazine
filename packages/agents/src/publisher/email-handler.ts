@@ -16,6 +16,9 @@ export class EmailHandler {
   private cfg = config();
 
   constructor() {
+    if (!this.cfg.resend.apiKey) {
+      throw new Error('RESEND_API_KEY environment variable is required for email sending');
+    }
     this.resend = new Resend(this.cfg.resend.apiKey);
     this.subscriberRepo = new SubscriberRepository();
     this.issueRepo = new IssueRepository();

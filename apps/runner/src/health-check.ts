@@ -43,6 +43,10 @@ async function checkSupabase(): Promise<boolean> {
 async function checkResend(): Promise<boolean> {
   try {
     const cfg = config();
+    if (!cfg.resend.apiKey) {
+      logger.warn('Resend: SKIPPED (no API key set)');
+      return true;
+    }
     const resend = new Resend(cfg.resend.apiKey);
 
     // Just verify the API key is valid by checking domains
