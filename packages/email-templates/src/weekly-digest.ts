@@ -1,3 +1,17 @@
+// GitHub raw content base URL for images
+const IMAGE_BASE_URL = 'https://raw.githubusercontent.com/YOUEARNEDIT53/dads-workout-magazine/main/assets/images';
+
+// Author ID to image filename mapping
+const AUTHOR_IMAGES: Record<string, string> = {
+  'dr-marcus-chen': `${IMAGE_BASE_URL}/dr-marcus-chen.png`,
+  'dr-angela-okafor': `${IMAGE_BASE_URL}/dr-angela-okafor.png`,
+  'coach-dt-thompson': `${IMAGE_BASE_URL}/coach-dt-thompson.png`,
+  'maya-santana': `${IMAGE_BASE_URL}/maya-santana.png`,
+  'gary-sunglass-hut': `${IMAGE_BASE_URL}/gary-sunglass-hut.png`,
+};
+
+const COVER_IMAGE = `${IMAGE_BASE_URL}/cover.png`;
+
 export interface DigestEmailData {
   issueNumber: number;
   issueDate: string;
@@ -5,6 +19,7 @@ export interface DigestEmailData {
   editorsLetter: string;
   mainArticles: Array<{
     title: string;
+    authorId: string;
     authorName: string;
     authorTitle: string;
     content: string;
@@ -12,6 +27,7 @@ export interface DigestEmailData {
   }>;
   wildcardColumn: {
     title: string;
+    authorId: string;
     authorName: string;
     content: string;
     excerpt: string;
@@ -84,13 +100,22 @@ export function generateDigestEmailHtml(data: DigestEmailData): string {
 
   const articleCardsHtml = data.mainArticles
     .map(
-      (article) => `
-    <div class="article-card">
-      <h3>${escapeHtml(article.title)}</h3>
-      <p class="author-line">By ${escapeHtml(article.authorName)}, ${escapeHtml(article.authorTitle)}</p>
-      <div style="white-space: pre-wrap;">${escapeHtml(article.content)}</div>
+      (article) => {
+        const authorImage = AUTHOR_IMAGES[article.authorId] || '';
+        return `
+    <div class="article-card" style="margin-bottom: 30px;">
+      <h3 style="color: #1a365d; font-size: 24px; margin-bottom: 15px;">${escapeHtml(article.title)}</h3>
+      <div style="display: flex; align-items: flex-start; margin-bottom: 20px;">
+        ${authorImage ? `<img src="${authorImage}" alt="${escapeHtml(article.authorName)}" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-right: 15px; border: 3px solid #2563eb;" />` : ''}
+        <div>
+          <p style="margin: 0; font-weight: 600; color: #1a365d; font-size: 16px;">${escapeHtml(article.authorName)}</p>
+          <p style="margin: 4px 0 0 0; color: #718096; font-size: 14px; font-style: italic;">${escapeHtml(article.authorTitle)}</p>
+        </div>
+      </div>
+      <div style="white-space: pre-wrap; line-height: 1.7; color: #374151;">${escapeHtml(article.content)}</div>
     </div>
-  `
+  `;
+      }
     )
     .join('');
 
@@ -132,10 +157,12 @@ export function generateDigestEmailHtml(data: DigestEmailData): string {
 </head>
 <body>
   <div class="container">
-    <!-- Header -->
-    <div class="header">
-      <h1>Dad's Workout Health Magazine</h1>
-      <p class="issue-info">Issue #${data.issueNumber} | ${escapeHtml(data.issueDate)}</p>
+    <!-- Header with Cover Image -->
+    <div class="header" style="padding: 0;">
+      <img src="${COVER_IMAGE}" alt="Dad's Workout Health Magazine" style="width: 100%; max-width: 600px; display: block;" />
+      <div style="padding: 15px 20px; background-color: #1a365d;">
+        <p class="issue-info" style="margin: 0;">Issue #${data.issueNumber} | ${escapeHtml(data.issueDate)}</p>
+      </div>
     </div>
 
     <!-- Editor's Letter -->
@@ -159,9 +186,15 @@ export function generateDigestEmailHtml(data: DigestEmailData): string {
     <div class="section section-alt">
       <h2>Guest Column</h2>
       <div class="wildcard-section">
-        <h3>${escapeHtml(data.wildcardColumn.title)}</h3>
-        <p class="author-line">By ${escapeHtml(data.wildcardColumn.authorName)}</p>
-        <div style="white-space: pre-wrap;">${escapeHtml(data.wildcardColumn.content)}</div>
+        <h3 style="color: #7c3aed; font-size: 22px; margin-bottom: 15px;">${escapeHtml(data.wildcardColumn.title)}</h3>
+        <div style="display: flex; align-items: flex-start; margin-bottom: 20px;">
+          ${AUTHOR_IMAGES[data.wildcardColumn.authorId] ? `<img src="${AUTHOR_IMAGES[data.wildcardColumn.authorId]}" alt="${escapeHtml(data.wildcardColumn.authorName)}" style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover; margin-right: 15px; border: 3px solid #7c3aed;" />` : ''}
+          <div>
+            <p style="margin: 0; font-weight: 600; color: #7c3aed; font-size: 16px;">${escapeHtml(data.wildcardColumn.authorName)}</p>
+            <p style="margin: 4px 0 0 0; color: #718096; font-size: 13px; font-style: italic;">Guest Columnist</p>
+          </div>
+        </div>
+        <div style="white-space: pre-wrap; line-height: 1.7; color: #374151;">${escapeHtml(data.wildcardColumn.content)}</div>
       </div>
     </div>
 

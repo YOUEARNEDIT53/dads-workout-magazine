@@ -91,6 +91,7 @@ export class EmailHandler {
       editorsLetter: digest.editorsLetter,
       mainArticles: digest.mainArticles.map((a) => ({
         title: a.title,
+        authorId: a.authorId || '',
         authorName: a.authorName || 'Staff Writer',
         authorTitle: a.authorTitle || '',
         content: a.content,
@@ -98,6 +99,7 @@ export class EmailHandler {
       })),
       wildcardColumn: {
         title: digest.wildcardColumn.title,
+        authorId: digest.wildcardColumn.authorId || '',
         authorName: digest.wildcardColumn.authorName || 'Guest Columnist',
         content: digest.wildcardColumn.content,
         excerpt: digest.wildcardColumn.excerpt || digest.wildcardColumn.content.slice(0, 150) + '...',
