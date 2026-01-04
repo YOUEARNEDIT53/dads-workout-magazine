@@ -7,14 +7,14 @@ export interface DigestEmailData {
     title: string;
     authorName: string;
     authorTitle: string;
+    content: string;
     excerpt: string;
-    url: string;
   }>;
   wildcardColumn: {
     title: string;
     authorName: string;
+    content: string;
     excerpt: string;
-    url: string;
   };
   quickWins: Array<{
     title: string;
@@ -39,7 +39,6 @@ export interface DigestEmailData {
     content: string;
   };
   pdfUrl?: string;
-  webUrl: string;
   unsubscribeUrl: string;
 }
 
@@ -89,8 +88,7 @@ export function generateDigestEmailHtml(data: DigestEmailData): string {
     <div class="article-card">
       <h3>${escapeHtml(article.title)}</h3>
       <p class="author-line">By ${escapeHtml(article.authorName)}, ${escapeHtml(article.authorTitle)}</p>
-      <p>${escapeHtml(article.excerpt)}</p>
-      <a href="${escapeHtml(article.url)}" class="btn">Read Full Article</a>
+      <div style="white-space: pre-wrap;">${escapeHtml(article.content)}</div>
     </div>
   `
     )
@@ -163,8 +161,7 @@ export function generateDigestEmailHtml(data: DigestEmailData): string {
       <div class="wildcard-section">
         <h3>${escapeHtml(data.wildcardColumn.title)}</h3>
         <p class="author-line">By ${escapeHtml(data.wildcardColumn.authorName)}</p>
-        <p>${escapeHtml(data.wildcardColumn.excerpt)}</p>
-        <a href="${escapeHtml(data.wildcardColumn.url)}" class="btn">Read More</a>
+        <div style="white-space: pre-wrap;">${escapeHtml(data.wildcardColumn.content)}</div>
       </div>
     </div>
 
@@ -221,10 +218,7 @@ export function generateDigestEmailHtml(data: DigestEmailData): string {
 
     <!-- Footer -->
     <div class="footer">
-      <div style="margin-bottom: 20px;">
-        ${data.pdfUrl ? `<a href="${escapeHtml(data.pdfUrl)}" class="btn" style="margin-right: 10px;">Download PDF</a>` : ''}
-        <a href="${escapeHtml(data.webUrl)}" class="btn btn-secondary">View on Web</a>
-      </div>
+      ${data.pdfUrl ? `<div style="margin-bottom: 20px;"><a href="${escapeHtml(data.pdfUrl)}" class="btn">Download PDF</a></div>` : ''}
       <p>Dad's Workout Health Magazine<br>Helping dads get stronger, one week at a time.</p>
       <div class="footer-links">
         <a href="${escapeHtml(data.unsubscribeUrl)}">Unsubscribe</a>
@@ -240,10 +234,12 @@ export function generateDigestEmailText(data: DigestEmailData): string {
   const articlesList = data.mainArticles
     .map(
       (a) => `
-* ${a.title}
-  By ${a.authorName}, ${a.authorTitle}
-  ${a.excerpt}
-  Read more: ${a.url}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+${a.title}
+By ${a.authorName}, ${a.authorTitle}
+
+${a.content}
 `
     )
     .join('\n');
@@ -255,60 +251,63 @@ export function generateDigestEmailText(data: DigestEmailData): string {
   const qaList = data.readerQA.map((qa) => `Q: ${qa.question}\nA: ${qa.answer} - ${qa.expert}`).join('\n\n');
 
   return `
-DAD'S WORKOUT HEALTH MAGAZINE
-Issue #${data.issueNumber} | ${data.issueDate}
+═══════════════════════════════════════════════════════════════
+   DAD'S WORKOUT HEALTH MAGAZINE
+   Issue #${data.issueNumber} | ${data.issueDate}
+═══════════════════════════════════════════════════════════════
 
 ${data.issueTitle}
 
 FROM THE EDITOR'S DESK
+─────────────────────────────────────────────────────────────────
 ${data.editorsLetter}
-
----
 
 THIS WEEK'S FEATURES
 ${articlesList}
 
----
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 GUEST COLUMN
 ${data.wildcardColumn.title}
 By ${data.wildcardColumn.authorName}
-${data.wildcardColumn.excerpt}
-Read more: ${data.wildcardColumn.url}
 
----
+${data.wildcardColumn.content}
 
-QUICK WINS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+QUICK WINS - 3 Things You Can Do Today
+─────────────────────────────────────────────────────────────────
 ${quickWinsList}
 
----
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 GEAR CORNER
+─────────────────────────────────────────────────────────────────
 ${data.gearCorner.productName} - ${data.gearCorner.price}
 ${data.gearCorner.description}
 Pros: ${data.gearCorner.pros.join(', ')}
 Cons: ${data.gearCorner.cons.join(', ')}
 
----
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 READER Q&A
+─────────────────────────────────────────────────────────────────
 ${qaList}
 
----
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 MONTHLY CHALLENGE UPDATE
+─────────────────────────────────────────────────────────────────
 ${data.challengeUpdate.title} - Week ${data.challengeUpdate.week}
 ${data.challengeUpdate.content}
 
----
-
-${data.pdfUrl ? `Download PDF: ${data.pdfUrl}` : ''}
-View on Web: ${data.webUrl}
-
+═══════════════════════════════════════════════════════════════
+${data.pdfUrl ? `Download PDF: ${data.pdfUrl}\n` : ''}
 Unsubscribe: ${data.unsubscribeUrl}
 
 Dad's Workout Health Magazine
 Helping dads get stronger, one week at a time.
+═══════════════════════════════════════════════════════════════
   `.trim();
 }
 

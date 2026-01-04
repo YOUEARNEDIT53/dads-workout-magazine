@@ -80,8 +80,6 @@ export class EmailHandler {
     baseUrl: string,
     pdfUrl?: string
   ): DigestEmailData {
-    const issueUrl = `${baseUrl}/issues/${digest.slug}`;
-
     return {
       issueNumber: digest.issueNumber,
       issueDate: new Date().toLocaleDateString('en-US', {
@@ -95,14 +93,14 @@ export class EmailHandler {
         title: a.title,
         authorName: a.authorName || 'Staff Writer',
         authorTitle: a.authorTitle || '',
+        content: a.content,
         excerpt: a.excerpt || a.content.slice(0, 200) + '...',
-        url: `${issueUrl}#${this.slugify(a.title)}`,
       })),
       wildcardColumn: {
         title: digest.wildcardColumn.title,
         authorName: digest.wildcardColumn.authorName || 'Guest Columnist',
+        content: digest.wildcardColumn.content,
         excerpt: digest.wildcardColumn.excerpt || digest.wildcardColumn.content.slice(0, 150) + '...',
-        url: `${issueUrl}#wildcard`,
       },
       quickWins: digest.quickWins.map((qw) => ({
         title: qw.title,
@@ -121,7 +119,6 @@ export class EmailHandler {
         content: digest.challengeUpdate,
       },
       pdfUrl,
-      webUrl: issueUrl,
       unsubscribeUrl: `${baseUrl}/unsubscribe`,
     };
   }
